@@ -21,12 +21,17 @@ def get_licence(url):
 def getvideolinks(xml):
     links = []
 
-    for video in xml.findall('.//link'):
-        url = video.attrib.get('url')
-        if ("youtube" in url) or (r'youtu.be' in url):
-            links.append(url)
-        else:
-            print ",".join([url, "not youtube"])
+    for element in xml.iter():
+        url = None
+        if ('url' in element.attrib.keys()):
+            url = element.attrib.get('url')
+        elif 'href' in element.attrib.keys():
+            url = element.attrib.get('href')
+        if url is not None:
+            if ("youtube" in url) or (r'youtu.be' in url):
+                links.append(url)
+            else:
+                print ",".join([url, "not youtube"])
 
     return links
 
