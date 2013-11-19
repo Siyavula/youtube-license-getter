@@ -5,7 +5,7 @@ import os
 from lxml import etree
 
 
-def get_licence(url):
+def get_licence_and_username(url):
     htmlstr = urllib.urlopen("{video}".format(video=url)).read()
     html = etree.HTML(htmlstr)
 
@@ -15,7 +15,19 @@ def get_licence(url):
         if "license" in h4.text.strip().lower():
             license = "".join([t for t in h4.getnext().itertext()]).strip()
 
-    return license
+    username = None
+
+    for a in html.findall('.//a'):
+        _class = a.attrib.get('class')
+        if _class is not None:
+            if 'yt-user-name' in a.attrib['class']:
+                href = a.attrib['href']
+                username = href.split('/')[2]
+                username = username[0:username.index('?')]
+
+    return license, username
+
+
 
 
 def getvideolinks(xml):
@@ -54,4 +66,4 @@ if __name__ == "__main__":
 
 
     for url in urls:
-        print ",".join([url, get_licence(url)])
+        print ",".join([url, ', '.join(get_licence_and_username(url))])
