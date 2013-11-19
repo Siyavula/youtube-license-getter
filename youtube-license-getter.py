@@ -15,7 +15,7 @@ def get_licence_and_username(url):
         if "license" in h4.text.strip().lower():
             license = "".join([t for t in h4.getnext().itertext()]).strip()
 
-    username = None
+    username = 'None'
 
     for a in html.findall('.//a'):
         _class = a.attrib.get('class')
@@ -23,7 +23,10 @@ def get_licence_and_username(url):
             if 'yt-user-name' in a.attrib['class']:
                 href = a.attrib['href']
                 username = href.split('/')[2]
-                username = username[0:username.index('?')]
+                try:
+                    username = username[0:username.index('?')]
+                except:
+                    pass
 
     return license, username
 
